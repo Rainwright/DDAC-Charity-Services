@@ -5,6 +5,13 @@
     ViewData["Title"] = "Log in";
 }
 
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["message"]
+    </div>
+}
+
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">

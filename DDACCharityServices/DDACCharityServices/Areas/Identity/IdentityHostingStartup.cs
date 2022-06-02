@@ -21,6 +21,7 @@ namespace DDACCharityServices.Areas.Identity
                         context.Configuration.GetConnectionString("DDACCharityServicesContextConnection")));
 
                 services.AddDefaultIdentity<DDACCharityServicesUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DDACCharityServicesContext>();
             });
         }
