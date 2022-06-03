@@ -14,6 +14,26 @@
     </div>
 }
 
+<br />
+
+<form>
+    <div class="col-md-12 container">
+        <div class="row">
+            <div class="col-md-7">
+                <input type="text" name="searchstring" class="form-control" placeholder="Search User e.g. sam@mail.com"/>
+            </div>
+            <div class="col">
+                <select name="searchkeyword" asp-items="@ViewBag.SearchKeywordList" class="form-control"></select>
+            </div>
+            <div class="col">
+                <input type="submit" name="submit" class="btn btn-primary" value="Search User"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
 <table class="table">
     <thead>
         <tr>

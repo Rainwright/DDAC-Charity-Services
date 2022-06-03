@@ -4,8 +4,10 @@ using DDACCharityServices.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DDACCharityServices.Controllers
@@ -28,18 +30,75 @@ namespace DDACCharityServices.Controllers
             _roleManager = roleManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchstring, string searchkeyword)
         {
             var users = _userManager.Users;
 
-            var userList = new List<UserListModel>();
-            foreach (DDACCharityServicesUser user in users)
+            const string emailSearchKeyword = "Email";
+            const string firstNameSearchKeyword = "First Name";
+            const string lastNameSearchKeyword = "Last Name";
+            const string roleSearchKeyword = "Role";
+
+            Console.WriteLine(searchkeyword);
+
+            var SearchKeywordList = new SelectList(
+                    new List<SelectListItem>
+                    {
+                    new SelectListItem { Selected=true, Text="-", Value=""},
+                    new SelectListItem { Selected=false, Text=emailSearchKeyword, Value=emailSearchKeyword},
+                    new SelectListItem { Selected=false, Text=firstNameSearchKeyword, Value=firstNameSearchKeyword},
+                    new SelectListItem { Selected=false, Text=lastNameSearchKeyword, Value=lastNameSearchKeyword},
+                    new SelectListItem { Selected=false, Text=roleSearchKeyword, Value=roleSearchKeyword},
+                    },
+                    "Value", "Text", 1
+                   );
+
+            ViewBag.SearchKeywordList = SearchKeywordList;
+
+            if (!string.IsNullOrEmpty(searchstring))
             {
-                var currentUser = new UserListModel();
-                currentUser.CopyFromIdentityUser(user);
-                await currentUser.SetRoleFromIdentityUser(user, _userManager);
-                userList.Add(currentUser);
+                if (!string.IsNullOrEmpty(searchkeyword))
+                {
+                    switch (searchkeyword)
+                    {
+                        case emailSearchKeyword:
+                            users = users.Where(user => user.Email.Contains(searchstring));
+                            break;
+                        case firstNameSearchKeyword:
+                            users = users.Where(user => user.FirstName.Contains(searchstring));
+                            break;
+                        case lastNameSearchKeyword:
+                            users = users.Where(user => user.LastName.Contains(searchstring));
+                            break;
+                    }
+                }
             }
+
+            var userList = new List<UserListModel>();
+            if (searchkeyword == roleSearchKeyword)
+            {
+                if(!string.IsNullOrEmpty(searchstring))
+                {
+                    IList<DDACCharityServicesUser> roleusers = await _userManager.GetUsersInRoleAsync(searchstring);
+                    foreach (DDACCharityServicesUser user in roleusers)
+                    {
+                        var currentUser = new UserListModel();
+                        currentUser.CopyFromIdentityUser(user);
+                        await currentUser.SetRoleFromIdentityUser(user, _userManager);
+                        userList.Add(currentUser);
+                    }
+                }
+            } else
+            {
+                foreach (DDACCharityServicesUser user in users)
+                {
+                    var currentUser = new UserListModel();
+                    currentUser.CopyFromIdentityUser(user);
+                    await currentUser.SetRoleFromIdentityUser(user, _userManager);
+                    userList.Add(currentUser);
+                }
+            }
+
             return View(userList);
         }
 
