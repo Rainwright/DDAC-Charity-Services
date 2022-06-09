@@ -27,7 +27,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        
+
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @if (this.User.IsInRole("Admin"))
@@ -36,10 +36,16 @@
                                     <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="UserList" asp-action="Index">Users</a>
                                 </li>
                             }
+
+
+                            <li class="nav-item">
+                                <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Backgrounds" asp-action="Index">Donation Backgrounds</a>
+                            </li>
+
                         }
                         @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> 
-                        </li>*@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>*@
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

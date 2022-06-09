@@ -1,0 +1,132 @@
+﻿@model IEnumerable<DDACCharityServices.Models.Background>
+
+@{
+    ViewData["Title"] = "Background";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+@if (this.User.IsInRole("Staff"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomUserModelEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.User.IsInRole("Staff"))
+        {
+            @foreach (var item in Model)
+            {
+                @if (item.CustomUserModelEmail.Equals(this.User.Identity.Name))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomUserModelEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundStatus)
+                        </td>
+
+                        <td>
+                            @if (!item.BackgroundStatus.Equals("Rejected"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.BackgroundID">Edit</a>
+                                <text>|</text>
+                                <a asp-action="Details" asp-route-id="@item.BackgroundID"> Details </a>
+                                <text>|</text>
+                            }
+                            <a asp-action="Delete" asp-route-id="@item.BackgroundID">Delete</a>
+                        </td>
+
+                    </tr>
+                }
+            }
+        }
+        @if (this.User.IsInRole("Admin"))
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BackgroundName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BackgroundDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BackgroundAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomUserModelEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BackgroundStatus)
+                    </td>
+                    <td>
+                        <a asp-action="Review" asp-route-id="@item.BackgroundID">Review</a>
+                    </td>
+                </tr>
+            }
+        }
+        @if (this.User.IsInRole("Customer"))
+        {
+            @foreach (var item in Model)
+            {
+                @if (item.BackgroundStatus.Equals("Approved"))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CustomUserModelEmail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BackgroundStatus)
+                        </td>
+                        <td>
+                            <a asp-action="Donate" asp-route-id="@item.BackgroundID">Donate</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

@@ -1,8 +1,10 @@
 ﻿using DDACCharityServices.Areas.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace DDACCharityServices.Models
 {
@@ -23,6 +25,9 @@ namespace DDACCharityServices.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Donations Backgrounds")]
+        public List<Background> Backgrounds { get; set; }
 
         public override void CopyFromIdentityUser(DDACCharityServicesUser user)
         {
