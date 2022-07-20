@@ -44,11 +44,11 @@ namespace DDACCharityServices.Controllers
             var SearchKeywordList = new SelectList(
                     new List<SelectListItem>
                     {
-                    new SelectListItem { Selected=true, Text="-", Value=""},
-                    new SelectListItem { Selected=false, Text=emailSearchKeyword, Value=emailSearchKeyword},
-                    new SelectListItem { Selected=false, Text=firstNameSearchKeyword, Value=firstNameSearchKeyword},
-                    new SelectListItem { Selected=false, Text=lastNameSearchKeyword, Value=lastNameSearchKeyword},
-                    new SelectListItem { Selected=false, Text=roleSearchKeyword, Value=roleSearchKeyword},
+                        new SelectListItem { Selected=true, Text="-", Value=""},
+                        new SelectListItem { Selected=false, Text=emailSearchKeyword, Value=emailSearchKeyword},
+                        new SelectListItem { Selected=false, Text=firstNameSearchKeyword, Value=firstNameSearchKeyword},
+                        new SelectListItem { Selected=false, Text=lastNameSearchKeyword, Value=lastNameSearchKeyword},
+                        new SelectListItem { Selected=false, Text=roleSearchKeyword, Value=roleSearchKeyword},
                     },
                     "Value", "Text", 1
                    );
@@ -85,6 +85,7 @@ namespace DDACCharityServices.Controllers
                         var currentUser = new UserListModel();
                         currentUser.CopyFromIdentityUser(user);
                         await currentUser.SetRoleFromIdentityUser(user, _userManager);
+                        currentUser.FullImageUrl = user.profileImageUrl != null ? AWSHelper.GetFullImageUrl(user.profileImageUrl) : null;
                         userList.Add(currentUser);
                     }
                 }
@@ -95,8 +96,13 @@ namespace DDACCharityServices.Controllers
                     var currentUser = new UserListModel();
                     currentUser.CopyFromIdentityUser(user);
                     await currentUser.SetRoleFromIdentityUser(user, _userManager);
+                    currentUser.FullImageUrl = user.profileImageUrl != null ? AWSHelper.GetFullImageUrl(user.profileImageUrl) : null;
                     userList.Add(currentUser);
                 }
+            }
+
+            foreach (UserListModel user in userList)
+            {
             }
 
             return View(userList);
@@ -227,7 +233,7 @@ namespace DDACCharityServices.Controllers
             }
 
             await _userManager.UpdateAsync(user);
-            TempData["message"] = "Profile has been updated.";
+            TempData["message"] = "Profile has been updated!";
             return RedirectToAction(nameof(Index));
         }
 

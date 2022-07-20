@@ -5,33 +5,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-@if (this.User.IsInRole("Staff"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
-
+<h1>Donation Backgrounds</h1>
+<h6>The below table displays all the information of backgrounds currently in the system. </h6>
+<br />
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="align-middle">
                 @Html.DisplayNameFor(model => model.BackgroundName)
             </th>
-            <th>
+            <th class="align-middle">
                 @Html.DisplayNameFor(model => model.BackgroundDescription)
             </th>
-            <th>
+            <th class="align-middle">
                 @Html.DisplayNameFor(model => model.BackgroundAmount)
             </th>
-            <th>
+            <th class="align-middle">
                 @Html.DisplayNameFor(model => model.CustomUserModelEmail)
             </th>
-            <th>
+            <th class="align-middle">
                 @Html.DisplayNameFor(model => model.BackgroundStatus)
             </th>
-            <th></th>
+            <th class="align-middle">
+                @if (this.User.IsInRole("Staff"))
+                {
+                    <a asp-action="Create" class="btn btn-primary" style="background-color: #0ace96; box-shadow: 0px 2px 6px 0px rgba(10, 207, 151, 0.5); border: 0">Create Donation</a>
+                }
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -42,31 +42,28 @@
                 @if (item.CustomUserModelEmail.Equals(this.User.Identity.Name))
                 {
                     <tr>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.BackgroundName)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.BackgroundDescription)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.BackgroundAmount)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.CustomUserModelEmail)
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.BackgroundStatus)
                         </td>
-
-                        <td>
+                        <td class="align-middle">
                             @if (!item.BackgroundStatus.Equals("Rejected"))
                             {
-                                <a asp-action="Edit" asp-route-id="@item.BackgroundID">Edit</a>
-                                <text>|</text>
-                                <a asp-action="Details" asp-route-id="@item.BackgroundID"> Details </a>
-                                <text>|</text>
+                                <a asp-action="Edit" asp-route-id="@item.BackgroundID" class="btn btn-warning">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.BackgroundID" class="btn btn-info"> Details </a>
                             }
-                            <a asp-action="Delete" asp-route-id="@item.BackgroundID">Delete</a>
+                            <a asp-action="Delete" asp-route-id="@item.BackgroundID" class="btn btn-danger">Delete</a>
                         </td>
 
                     </tr>
@@ -78,23 +75,23 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.BackgroundName)
                     </td>
-                    <td>
+                    <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.BackgroundDescription)
                     </td>
-                    <td>
+                    <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.BackgroundAmount)
                     </td>
-                    <td>
+                    <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.CustomUserModelEmail)
                     </td>
-                    <td>
+                    <td class="align-middle">
                         @Html.DisplayFor(modelItem => item.BackgroundStatus)
                     </td>
-                    <td>
-                        <a asp-action="Review" asp-route-id="@item.BackgroundID">Review</a>
+                    <td class="align-middle">
+                        <a asp-action="Review" asp-route-id="@item.BackgroundID" class="btn btn-info">Review</a>
                     </td>
                 </tr>
             }

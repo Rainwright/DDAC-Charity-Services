@@ -81,12 +81,12 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required(ErrorMessage = "First Name is required.")]
-            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
-            [Display(Name = "Last Name")]
-            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [Display(Name = "Last Name (Optional)")]
+            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             public string LastName { get; set; }
 
             [Required(ErrorMessage = "Role is required.")]

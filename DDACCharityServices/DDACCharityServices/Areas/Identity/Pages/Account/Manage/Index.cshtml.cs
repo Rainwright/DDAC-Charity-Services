@@ -44,17 +44,17 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
+            [Phone(ErrorMessage = "Invalid phone number.")]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
             [Required(ErrorMessage = "First Name is required.")]
-            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
             [Display(Name = "Last Name")]
-            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
+            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             public string LastName { get; set; }
         }
 
@@ -110,7 +110,9 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
             {
                 /*await LoadAsync(user);
                 return Page();*/
-                return BadRequest("The form is not valid! Please try again!");
+                TempData["message"] = "The form is not valid! Please try again!";
+                //StatusMessage = "The form is not valid! Please try again!";
+                return RedirectToPage();
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -137,7 +139,7 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
             await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Your profile has been updated!";
             return RedirectToPage();
         }
 
@@ -184,11 +186,16 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest("The image file is invalid");
+
+                    TempData["imageMessage"] = "Unable to connect to image server. Please try again later.";
+                    return RedirectToPage();
+                    //return BadRequest("The image file is invalid");
                 }
             } else
             {
-                return BadRequest(ValidationErrors);
+                TempData["imageMessage"] = ValidationErrors;
+                return RedirectToPage();
+                //return BadRequest(ValidationErrors);
             }
         }
 

@@ -1,8 +1,48 @@
-﻿@{
+﻿@model UserListModel
+@using Microsoft.AspNetCore.Identity
+@using DDACCharityServices.Areas.Identity.Data
+
+@inject SignInManager<DDACCharityServicesUser> SignInManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h4 class="text-left">Dashboard</h4>
+        <div class="card">
+            <div class="m-3 row">
+                @if(Model.FullImageUrl != null) {
+                    <img
+                        src=@Model.FullImageUrl
+                        alt=""
+                        style="width: 200px; height: 200px"
+                        class="col-3 d-flex align-items-start mr-2"
+                    />
+                }
+                <div class="col">
+                    <h3 class="text-left">
+                        Welcome Back <b>@Model.FirstName</b>!
+                    </h3>
+                    <h5 class="text-left">
+                        How was your day? Check out some of the donations made today!
+                    </h5>
+                    <div class="text-left form-text" style="color: #6c757d;">
+                        You are currently logged in as <b>@Model.UserRole</b>
+                    </div>
+                    <br />
+                    <div class="col-6 pl-0">
+                        <a id="manage" class="nav-link btn-outline-primary btn" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    }
 </div>

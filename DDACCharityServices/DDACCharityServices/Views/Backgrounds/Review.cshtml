@@ -5,66 +5,88 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Review this Donation Background</h1>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="text-center">Review this Donation Background</h1>
+        <h6 class="text-center">Should this donation background be approved or rejected?</h6>
+        <hr />
+        <div class="form-group">
+            <label asp-for="@Model.BackgroundID"></label>
+            <input asp-for="@Model.BackgroundID" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.BackgroundName"></label>
+            <input asp-for="@Model.BackgroundName" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.BackgroundDescription"></label>
+            <input asp-for="@Model.BackgroundDescription" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.BackgroundAmount"></label>
+            <input asp-for="@Model.BackgroundAmount" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CustomUserModelEmail"></label>
+            <input asp-for="@Model.CustomUserModelEmail" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.BackgroundStatus"></label>
+            <input asp-for="@Model.BackgroundStatus" class="form-control"disabled />
+        </div>
+        @*<dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BackgroundID)
+            </dt>
+            <dt class="col-sm-10">
+                @Html.DisplayFor(model => model.BackgroundID)
+            </dt>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BackgroundName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BackgroundName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BackgroundDescription)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BackgroundDescription)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BackgroundAmount)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BackgroundAmount)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CustomUserModelEmail)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomUserModelEmail)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BackgroundStatus)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BackgroundStatus)
+            </dd>
+        </dl>*@
 
-<h3>Should this donation background be approved or rejected?</h3>
-<div>
-    <h4>Backgrounds</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundID)
-        </dt>
-        <dt class="col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundID)
-        </dt>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundDescription)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundDescription)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundAmount)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundAmount)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomUserModelEmail)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CustomUserModelEmail)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundStatus)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundStatus)
-        </dd>
-    </dl>
-
-    <form asp-action="Review">
-        <input type="hidden" asp-for="BackgroundID" />
-        <input type="hidden" name="status" value="Approved"/>
-        <input type="submit" value="Approve" class="btn btn-success" />
-    </form>
-
-    <br />
-
-    <form asp-action="Review">
-        <input type="hidden" asp-for="BackgroundID" />
-        <input type="hidden" name="status" value="Rejected" />
-        <input type="submit" value="Reject" class="btn btn-danger" />
-    </form>
-
-    <br />
-
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group">
+            <form asp-action="Review">
+                <input type="hidden" asp-for="BackgroundID" />
+                <input type="hidden" name="status" value="Approved"/>
+                <input type="submit" value="Approve" class="btn btn-success" />
+            </form>
+            <br />
+            <form asp-action="Review">
+                <input type="hidden" asp-for="BackgroundID" />
+                <input type="hidden" name="status" value="Rejected" />
+                <input type="submit" value="Reject" class="btn btn-danger" />
+            </form>
+            <br />
+            <a asp-action="Index" class="btn btn-outline-primary">Back To Donation Backgrounds Page</a>
+        </div>
+    </div>
 </div>

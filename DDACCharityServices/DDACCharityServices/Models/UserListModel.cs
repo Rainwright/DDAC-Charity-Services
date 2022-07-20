@@ -19,6 +19,8 @@ namespace DDACCharityServices.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        public string FullImageUrl { get; set; }
+
         public override void CopyFromIdentityUser(DDACCharityServicesUser user)
         {
             this.Id = user.Id;

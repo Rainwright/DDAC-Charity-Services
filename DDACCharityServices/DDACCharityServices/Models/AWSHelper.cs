@@ -40,15 +40,15 @@ namespace DDACCharityServices.Models
         {
             if (imageFile == null || imageFile.Length <= 0)
             {
-                return imageFile.FileName + "is empty! Please upload a non-empty image!";
+                return "Image file is empty! Please upload a non-empty image!";
             }
             else if (imageFile.Length > 1048576) // 1MB
             {
-                return imageFile.FileName + "exceeds 1MB in size! Images should be less than or equal to 1MB";
+                return "Image file exceeds 1MB in size! Images should be less than or equal to 1MB!";
             }
             else if (imageFile.ContentType.ToLower() != "image/png" && imageFile.ContentType.ToLower() != "image/jpeg" && imageFile.ContentType.ToLower() != "image/gif") // 1MB
             {
-                return imageFile.FileName + "is not a valid image file!";
+                return "Selected file is not a valid image file!";
             } else
             {
                 return null;
