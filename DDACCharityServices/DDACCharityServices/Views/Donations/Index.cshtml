@@ -1,0 +1,116 @@
+﻿@model IEnumerable<DDACCharityServices.Models.Donation>
+
+@{
+    ViewData["Title"] = "Donations";
+}
+
+<h1>Donation History</h1>
+<h6>The below table displays all the information of donation records currently in the system. </h6>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th class="align-middle">
+                @Html.DisplayNameFor(model => model.Background.BackgroundName)
+            </th>
+
+            @if (this.User.IsInRole("Staff")) {
+                <th class="align-middle">
+                    @Html.DisplayNameFor(model => model.CustomerEmail)
+                </th>
+            }
+            @if (this.User.IsInRole("Customer") || this.User.IsInRole("Admin")) {
+                <th class="align-middle">
+                    @Html.DisplayNameFor(model => model.Background.CustomUserModelEmail)
+                </th>
+            }
+
+            <th class="align-middle">
+                @Html.DisplayNameFor(model => model.DonationDate)
+            </th>
+            <th class="align-middle">
+                @Html.DisplayNameFor(model => model.DonationAmount)
+            </th>
+            <th class="align-middle">
+                <!-- EMPTY -->
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.User.IsInRole("Staff"))
+        {
+            @foreach (var item in Model)
+            {
+                @if (item.Background.CustomUserModelEmail.Equals(this.User.Identity.Name))
+                {
+                    <tr>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.Background.BackgroundName)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.CustomerEmail)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.DonationDate)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.DonationAmount)
+                        </td>
+                        <td class="align-middle">
+                            <a asp-action="Details" asp-route-id="@item.DonationID" class="btn btn-info">Details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        @if (this.User.IsInRole("Admin"))
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Background.BackgroundName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.Background.CustomUserModelEmail)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.DonationDate)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => item.DonationAmount)
+                    </td>
+                    <td class="align-middle">
+                        <a asp-action="Details" asp-route-id="@item.DonationID" class="btn btn-info">Details</a>
+                    </td>
+                </tr>
+            }
+        }
+        @if (this.User.IsInRole("Customer"))
+        {
+            @foreach (var item in Model)
+            {
+                @if (item.CustomerEmail.Equals(this.User.Identity.Name))
+                {
+                    <tr>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.Background.BackgroundName)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.Background.CustomUserModelEmail)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.DonationDate)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(modelItem => item.DonationAmount)
+                        </td>
+                        <td class="align-middle">
+                            <a asp-action="Details" asp-route-id="@item.DonationID" class="btn btn-info">Details</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

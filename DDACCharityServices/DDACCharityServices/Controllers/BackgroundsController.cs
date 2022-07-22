@@ -69,16 +69,13 @@ namespace DDACCharityServices.Views.Backgrounds
         }
 
         // GET: Backgrounds/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var background = await _context.Background.FindAsync(id);
-            if (background == null)
-            {
+            if (background == null) {
                 return NotFound();
             }
             return View(background);
@@ -96,7 +93,9 @@ namespace DDACCharityServices.Views.Backgrounds
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (background.BackgroundStatus.Equals("Approved"))
+
+                if (ModelState.IsValid)
             {
                 try
                 {
@@ -117,6 +116,43 @@ namespace DDACCharityServices.Views.Backgrounds
                 return RedirectToAction(nameof(Index));
             }
             return View(background);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Donate(int id, [Bind("DonationAmount")] Donation donation) {
+            if (!User.IsInRole("Customer")) return RedirectToAction(nameof(Index));
+
+            donation.BackgroundID = id;
+            donation.Background = await _context.Background.FirstOrDefaultAsync(m => m.BackgroundID == id);
+            donation.CustomerEmail = User.Identity.Name;
+            donation.DonationDate = DateTime.Now;
+
+            if (ModelState.IsValid) {
+                if (!donation.Background.BackgroundStatus.Equals("Approved")) return NotFound();
+                
+                _context.Add(donation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Donations");
+            }
+            return View(donation);
+        }
+
+        // GET: Backgrounds/Donate/5
+        public async Task<IActionResult> Donate(int? id) {
+            if (id == null) return NotFound();
+
+            var background = await _context.Background.FindAsync(id);
+            if (background == null || !background.BackgroundStatus.Equals("Approved")) return NotFound();
+
+			Donation res = new Donation {
+                DonationID = 0,
+                DonationAmount = 0,
+                DonationDate = DateTime.Now
+			};
+            res.Background = background;
+
+            return View(res);
         }
 
         // GET: Backgrounds/Delete/5

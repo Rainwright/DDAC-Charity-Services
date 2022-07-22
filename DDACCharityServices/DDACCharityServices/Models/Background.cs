@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace DDACCharityServices.Models
 {
@@ -21,5 +22,7 @@ namespace DDACCharityServices.Models
 
         [Display(Name = "Status of Donation")]
         public string BackgroundStatus { get; set; }
+
+        public ICollection<Donation> Donations { get; set; }
     }
 }

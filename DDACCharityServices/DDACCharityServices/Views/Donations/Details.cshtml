@@ -1,0 +1,40 @@
+﻿@model DDACCharityServices.Models.Donation
+
+@{
+    ViewData["Title"] = "Donation Details";
+}
+
+<div>
+    <div class="col-md-8 offset-md-2">
+        <h1>Donation Details</h1>
+        <h6>The below shows the basic donation details of the selected donation.</h6>
+        <hr />
+        <div class="form-group">
+            <label asp-for="@Model.Background.BackgroundName"></label>
+            <input asp-for="@Model.Background.BackgroundName" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Background.BackgroundDescription"></label>
+            <input asp-for="@Model.Background.BackgroundDescription" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Background.CustomUserModelEmail"></label>
+            <input asp-for="@Model.Background.CustomUserModelEmail" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CustomerEmail"></label>
+            <input asp-for="@Model.CustomerEmail" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.DonationDate"></label>
+            <input asp-for="@Model.DonationDate" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.DonationAmount"></label>
+            <input asp-for="@Model.DonationAmount" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <a asp-action="Index" class="btn btn-outline-primary">Back To Donation History Page</a>
+        </div>
+    </div>
+</div>

@@ -15,5 +15,7 @@ namespace DDACCharityServices.Data
         }
 
         public DbSet<DDACCharityServices.Models.Background> Background { get; set; }
+
+        public DbSet<DDACCharityServices.Models.Donation> Donation { get; set; }
     }
 }
