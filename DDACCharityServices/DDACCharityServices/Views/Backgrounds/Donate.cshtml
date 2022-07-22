@@ -1,52 +1,56 @@
-﻿@model DDACCharityServices.Models.Background
+﻿@model DDACCharityServices.Models.DonationViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Donate";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete</h1>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>Make Donation</h1>
+        <h6>Please confirm your donation amount and the donation title. </h6>
+        <hr />
+        <form asp-action="Donate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BackgroundID" />
+            <input type="hidden" asp-for="BackgroundName" />
+            <input type="hidden" asp-for="BackgroundDescription" />
+            <input type="hidden" asp-for="BackgroundAmount" />
+            <input type="hidden" asp-for="CustomUserModelEmail" />
+            <input type="hidden" asp-for="BackgroundStatus" />
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Background</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundAmount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomUserModelEmail)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CustomUserModelEmail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BackgroundStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackgroundStatus)
-        </dd>
-    </dl>
-    
-    <form asp-action="Donate">
-        <input type="hidden" asp-for="BackgroundID" />
-        <input type="submit" value="Donate" class="btn btn-outline-primary" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+            <div class="form-group">
+                <label asp-for="BackgroundName"></label>
+                <input asp-for="BackgroundName" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundDescription"></label>
+                <input asp-for="BackgroundDescription" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundAmount"></label>
+                <input asp-for="BackgroundAmount" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomUserModelEmail"></label>
+                <input asp-for="CustomUserModelEmail" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundStatus"></label>
+                <input asp-for="BackgroundStatus" class="form-control"disabled />
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="DonationAmount"></label>
+                <input asp-for="DonationAmount" class="form-control" />
+                <span asp-validation-for="DonationAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Confirm Donation" class="btn btn-success" />
+            </div>
+        </form>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-primary">Back To Donation Backgrounds Page</a>
+        </div>
+    </div>
 </div>

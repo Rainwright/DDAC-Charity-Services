@@ -69,16 +69,13 @@ namespace DDACCharityServices.Views.Backgrounds
         }
 
         // GET: Backgrounds/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var background = await _context.Background.FindAsync(id);
-            if (background == null)
-            {
+            if (background == null) {
                 return NotFound();
             }
             return View(background);
@@ -96,7 +93,9 @@ namespace DDACCharityServices.Views.Backgrounds
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (background.BackgroundStatus.Equals("Approved"))
+
+                if (ModelState.IsValid)
             {
                 try
                 {
@@ -117,6 +116,55 @@ namespace DDACCharityServices.Views.Backgrounds
                 return RedirectToAction(nameof(Index));
             }
             return View(background);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Donate(int id, [Bind("BackgroundID,BackgroundName,BackgroundDescription,BackgroundAmount,CustomUserModelEmail,BackgroundStatus,DonationAmount")] DonationViewModel donationViewModel) {
+            if (id != donationViewModel.BackgroundID) return NotFound();
+            if (!User.IsInRole("Customer")) return RedirectToAction(nameof(Index));
+
+            Console.WriteLine(donationViewModel);
+
+            if (ModelState.IsValid) {
+                if (!donationViewModel.BackgroundStatus.Equals("Approved")) return NotFound();
+
+                Donation donation = new Donation {
+                    DonationID = 0,
+                    BackgroundID = donationViewModel.BackgroundID,
+                    CustomerEmail = User.Identity.Name,
+                    StaffEmail = donationViewModel.CustomUserModelEmail,
+                    DonationAmount = donationViewModel.DonationAmount,
+                    DonationDate = DateTime.Now
+                };
+
+                _context.Add(donation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Donations");
+            }
+            return View(donationViewModel);
+        }
+
+        // GET: Backgrounds/Donate/5
+        public async Task<IActionResult> Donate(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var background = await _context.Background.FindAsync(id);
+            if (background == null) return NotFound();
+
+			DonationViewModel res = new DonationViewModel {
+                DonationID = 0,
+                BackgroundID = background.BackgroundID,
+                BackgroundName = background.BackgroundName,
+                BackgroundDescription = background.BackgroundDescription,
+                BackgroundAmount = background.BackgroundAmount,
+                CustomUserModelEmail = background.CustomUserModelEmail,
+                BackgroundStatus = background.BackgroundStatus,
+                DonationAmount = 0
+			};
+            return View(res);
         }
 
         // GET: Backgrounds/Delete/5

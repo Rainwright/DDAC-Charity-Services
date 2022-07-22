@@ -1,0 +1,53 @@
+﻿@model IEnumerable<DDACCharityServices.Models.Donation>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h1>Donation History</h1>
+<h6>The below table displays all the information of donation records currently in the system. </h6>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DonationAmount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StaffEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DonationAmount)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.DonationID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.DonationID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.DonationID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
