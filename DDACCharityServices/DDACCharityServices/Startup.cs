@@ -27,6 +27,7 @@ namespace DDACCharityServices
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSession();
 
             services.AddDbContext<DDACCharityServicesForBackgroundContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DDACCharityServicesForBackgroundContext")));
@@ -45,6 +46,7 @@ namespace DDACCharityServices
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
