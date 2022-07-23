@@ -1,4 +1,8 @@
 ﻿@model DDACCharityServices.Models.Background
+@using Microsoft.AspNetCore.Identity
+@using DDACCharityServices.Areas.Identity.Data
+
+@inject SignInManager<DDACCharityServicesUser> SignInManager
 
 @{
     ViewData["Title"] = "Details";
@@ -26,10 +30,13 @@
             <label asp-for="@Model.CustomUserModelEmail"></label>
             <input asp-for="@Model.CustomUserModelEmail" class="form-control"disabled />
         </div>
-        <div class="form-group">
-            <label asp-for="@Model.BackgroundStatus"></label>
-            <input asp-for="@Model.BackgroundStatus" class="form-control"disabled />
-        </div>
+        @if (!this.User.IsInRole("Customer"))
+        {
+            <div class="form-group">
+                <label asp-for="@Model.BackgroundStatus"></label>
+                <input asp-for="@Model.BackgroundStatus" class="form-control"disabled />
+            </div>        
+        }
         @*<dl class="row">
             <dt class = "col-sm-2">
                 @Html.DisplayNameFor(model => model.BackgroundName)
@@ -63,7 +70,14 @@
             </dd>
         </dl>*@
         <div class="form-group">
-            <a asp-action="Edit" asp-route-id="@Model.BackgroundID" class="btn btn-warning">Edit</a>
+            @if (this.User.IsInRole("Staff"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.BackgroundID" class="btn btn-warning">Edit</a>
+            }
+            @if (this.User.IsInRole("Customer"))
+            {
+                <a asp-action="Donate" asp-route-id="@Model.BackgroundID" class="btn btn-primary" style="background-color: #0ace96; box-shadow: 0px 2px 6px 0px rgba(10, 207, 151, 0.5); border: 0">Donate</a>
+            }
             <a asp-action="Index" class="btn btn-outline-primary">Back To Donation Backgrounds Page</a>
         </div>
     </div>

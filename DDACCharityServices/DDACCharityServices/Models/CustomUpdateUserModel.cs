@@ -10,9 +10,9 @@ namespace DDACCharityServices.Models
     {
         public string Id { get; set; }
 
-        static string customerRoleName = "Customer";
-        static string staffRoleName = "Staff";
-        static string adminRoleName = "Admin";
+        public static string customerRoleName = "Customer";
+        public static string staffRoleName = "Staff";
+        public static string adminRoleName = "Admin";
 
         public SelectList FullRoleSelectList = new SelectList(
                 new List<SelectListItem>

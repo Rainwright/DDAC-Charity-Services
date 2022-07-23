@@ -14,6 +14,17 @@ namespace DDACCharityServices.Models
     {
         readonly public static string awsBucketName = "mvcflowershoptp050734";
 
+        public static string GetS3BucketName()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            IConfigurationRoot configure = builder.Build();
+
+            return configure["S3BucketName"];
+        }
+
         public static List<string> GetAWSCredentials()
         {
             var builder = new ConfigurationBuilder()
@@ -86,7 +97,7 @@ namespace DDACCharityServices.Models
             {
                 DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest
                 {
-                    BucketName = awsBucketName + directory,
+                    BucketName = GetS3BucketName() + directory,
                     Key = imageKey,
                 };
 
@@ -108,7 +119,7 @@ namespace DDACCharityServices.Models
 
         public static string GetFullImageUrl(string imageKey)
         {
-            return "https://" + awsBucketName + ".s3.amazonaws.com" + imageKey;
+            return "https://" + GetS3BucketName() + ".s3.amazonaws.com" + imageKey;
         }
     }
 }

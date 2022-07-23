@@ -22,8 +22,59 @@ namespace DDACCharityServices.Views.Backgrounds
 
         // GET: Backgrounds
         public async Task<IActionResult> Index(string searchstring, string searchkeyword)
-        { 
-            return View(await _context.Background.ToListAsync());
+        {
+            var bgList =  _context.Background.AsEnumerable();
+
+            const string nameSearchKeyword = "Background Name";
+            const string requestorSearchKeyword = "Requestor Name";
+            const string statusSearchKeyword = "Status";
+
+            var SearchKeywordList = new SelectList(
+                    new List<SelectListItem>
+                    {
+                        new SelectListItem { Selected=true, Text="-", Value=""},
+                        new SelectListItem { Selected=false, Text=nameSearchKeyword, Value=nameSearchKeyword},
+                        new SelectListItem { Selected=false, Text=requestorSearchKeyword, Value=requestorSearchKeyword},
+                        new SelectListItem { Selected=false, Text=statusSearchKeyword, Value=statusSearchKeyword},
+                    },
+                    "Value", "Text", 1
+                   );
+
+            ViewBag.SearchKeywordList = SearchKeywordList;
+
+            if (!string.IsNullOrEmpty(searchstring))
+            {
+                if (!string.IsNullOrEmpty(searchkeyword))
+                {
+                    switch (searchkeyword)
+                    {
+                        case nameSearchKeyword:
+                            bgList = bgList.Where(background => background.BackgroundName.Contains(searchstring));
+                            break;
+                        case requestorSearchKeyword:
+                            bgList = bgList.Where(background => background.CustomUserModelEmail.Contains(searchstring));
+                            break;
+                        case statusSearchKeyword:
+                            bgList = bgList.Where(background => background.BackgroundStatus.Contains(searchstring));
+                            break;
+                    }
+                }
+            }
+
+            List<CustomBackgroundModel> bgViewList = new List<CustomBackgroundModel>();
+
+            bgList.ToList().ForEach(
+                bg => {
+                    var model = new CustomBackgroundModel();
+                    model.CopyFromBackground(bg);
+                    model.TotalDonations = _context.Donation
+                        .Where(donation => donation.Background.BackgroundID == bg.BackgroundID)
+                        .Sum(donation => donation.DonationAmount);
+                    bgViewList.Add(model);
+                }
+            );
+
+            return View(bgViewList);
         }
 
         // GET: Backgrounds/Details/5

@@ -16,7 +16,6 @@ namespace DDACCharityServices.Controllers
     {
         private readonly UserManager<DDACCharityServicesUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<DDACCharityServicesUser> _signInManager;
         private readonly DDACCharityServicesContext _context;
 
         public UserListController(
@@ -38,8 +37,6 @@ namespace DDACCharityServices.Controllers
             const string firstNameSearchKeyword = "First Name";
             const string lastNameSearchKeyword = "Last Name";
             const string roleSearchKeyword = "Role";
-
-            Console.WriteLine(searchkeyword);
 
             var SearchKeywordList = new SelectList(
                     new List<SelectListItem>
@@ -99,10 +96,6 @@ namespace DDACCharityServices.Controllers
                     currentUser.FullImageUrl = user.profileImageUrl != null ? AWSHelper.GetFullImageUrl(user.profileImageUrl) : null;
                     userList.Add(currentUser);
                 }
-            }
-
-            foreach (UserListModel user in userList)
-            {
             }
 
             return View(userList);
