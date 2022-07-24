@@ -1,6 +1,11 @@
 ﻿using Amazon;
+using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -34,17 +39,22 @@ namespace DDACCharityServices.Models
             IConfigurationRoot configure = builder.Build();
 
             List<string> keyLists = new List<string>();
-            keyLists.Add(configure["AWSCredential:key1"]); // accesskey
-            keyLists.Add(configure["AWSCredential:key2"]); // sessionkey
-            keyLists.Add(configure["AWSCredential:key3"]); // tokenkey
+			keyLists.Add(configure["AWSCredential:key1"]); // accesskey
+			keyLists.Add(configure["AWSCredential:key2"]); // sessionkey
+			keyLists.Add(configure["AWSCredential:key3"]); // tokenkey
 
-            return keyLists;
+			return keyLists;
         }
 
         public static AmazonS3Client GetAWSCredentialS3Object()
         {
             List<string> keyLists = GetAWSCredentials();
             return new AmazonS3Client(keyLists[0], keyLists[1], keyLists[2], RegionEndpoint.USEast1);
+        }
+
+        public static AmazonSimpleNotificationServiceClient GetAWSSimpleNotificationServiceClient() {
+            List<string> keyLists = GetAWSCredentials();
+            return new AmazonSimpleNotificationServiceClient(keyLists[0], keyLists[1], keyLists[2], RegionEndpoint.USEast1);
         }
 
         public static string ValidateImage(IFormFile imageFile)
@@ -120,6 +130,55 @@ namespace DDACCharityServices.Models
         public static string GetFullImageUrl(string imageKey)
         {
             return "https://" + GetS3BucketName() + ".s3.amazonaws.com" + imageKey;
+        }
+
+        public static async Task SendDonationThankYouEmail(AmazonSimpleNotificationServiceClient client, Donation donation) {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            IConfigurationRoot configure = builder.Build();
+
+            var request = new PublishRequest() {
+                TopicArn = configure["AWSCredential:TopicArn"], 
+                Message = "Thank you for your donation of RM" + donation.DonationAmount + " to " + donation.Background.BackgroundName + "!",
+                Subject = "New Donation Made"
+            };
+            request.MessageAttributes.Add("Email", new MessageAttributeValue() {
+                DataType = "String",
+                StringValue = donation.CustomerEmail
+            });
+
+            try {
+                var response = await client.PublishAsync(request);
+            } catch (AmazonS3Exception ex) {
+                throw new Exception("SNS Error - " + ex);
+            } catch (Exception ex) {
+                throw new Exception("Unexpected Error - " + ex);
+            }
+        }
+        public static async Task SendDonationReceivedEmail(AmazonSimpleNotificationServiceClient client, Donation donation) {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            IConfigurationRoot configure = builder.Build();
+
+            var request = new PublishRequest() {
+                TopicArn = configure["AWSCredential:TopicArn"],
+                Message = "You have just received new donation of RM" + donation.DonationAmount + " to " + donation.Background.BackgroundName + "!",
+                Subject = "New Donation Received"
+            };
+            request.MessageAttributes.Add("Email", new MessageAttributeValue() {
+                DataType = "String",
+                StringValue = donation.Background.CustomUserModelEmail
+            });
+
+            try {
+                var response = await client.PublishAsync(request);
+            } catch (AmazonS3Exception ex) {
+                throw new Exception("SNS Error - " + ex);
+            } catch (Exception ex) {
+                throw new Exception("Unexpected Error - " + ex);
+            }
         }
     }
 }

@@ -184,6 +184,10 @@ namespace DDACCharityServices.Views.Backgrounds
                 
                 _context.Add(donation);
                 await _context.SaveChangesAsync();
+
+                _ = AWSHelper.SendDonationThankYouEmail(AWSHelper.GetAWSSimpleNotificationServiceClient(), donation);
+                _ = AWSHelper.SendDonationReceivedEmail(AWSHelper.GetAWSSimpleNotificationServiceClient(), donation);
+
                 return RedirectToAction("Index", "Donations");
             }
             return View(donation);

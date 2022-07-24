@@ -16,5 +16,7 @@ namespace DDACCharityServices.Areas.Identity.Data
         public string LastName { get; set; }
         
         public string profileImageUrl { get; set; }
+
+        public string SubscriptionArn { get; set; }
     }
 }
