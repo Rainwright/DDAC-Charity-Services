@@ -6,12 +6,17 @@ using Amazon.S3.Model;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2.DataModel;
+using Microsoft.AspNetCore.Mvc;
+using Amazon.DynamoDBv2.DocumentModel;
 
 namespace DDACCharityServices.Models
 {
@@ -28,6 +33,29 @@ namespace DDACCharityServices.Models
             IConfigurationRoot configure = builder.Build();
 
             return configure["S3BucketName"];
+        }
+
+        public static string GetDynamoDBName()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            IConfigurationRoot configure = builder.Build();
+
+            return configure["DynamoDBName"];
+        }
+
+
+        public static string GetScanName()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            IConfigurationRoot configure = builder.Build();
+
+            return configure["ScanName"];
         }
 
         public static List<string> GetAWSCredentials()
@@ -57,6 +85,12 @@ namespace DDACCharityServices.Models
             return new AmazonSimpleNotificationServiceClient(keyLists[0], keyLists[1], keyLists[2], RegionEndpoint.USEast1);
         }
 
+        public static AmazonDynamoDBClient GetAWSCredentialDynamoDB()
+        {
+            List<string> keyLists = GetAWSCredentials();
+            return new AmazonDynamoDBClient(keyLists[0], keyLists[1], keyLists[2], RegionEndpoint.USEast1);
+        }
+
         public static string ValidateImage(IFormFile imageFile)
         {
             if (imageFile == null || imageFile.Length <= 0)
@@ -83,7 +117,7 @@ namespace DDACCharityServices.Models
                 PutObjectRequest imageUploadRequest = new PutObjectRequest
                 {
                     InputStream = imageFile.OpenReadStream(),
-                    BucketName = awsBucketName + directory,
+                    BucketName = GetS3BucketName() + directory,
                     Key = imageFile.FileName,
                     CannedACL = S3CannedACL.PublicRead
                 };

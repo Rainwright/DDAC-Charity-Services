@@ -1,4 +1,5 @@
-﻿@using DDACCharityServices.Controllers
+﻿@using Amazon.DynamoDBv2.DocumentModel
+@using DDACCharityServices.Controllers
 @using Microsoft.AspNetCore.Identity
 @using DDACCharityServices.Areas.Identity.Data
 @model HomeViewModel
@@ -17,13 +18,12 @@
             <h4 class="text-left">Dashboard</h4>
             <div class="card">
                 <div class="m-3 row">
-                    @if(Model.currentUser.FullImageUrl != null) {
-                        <img
-                            src=@Model.currentUser.FullImageUrl
-                            alt=""
-                            style="width: 200px; height: 200px"
-                            class="col-3 d-flex align-items-start mr-2"
-                        />
+                    @if (Model.currentUser.FullImageUrl != null)
+                    {
+                        <img src=@Model.currentUser.FullImageUrl
+                     alt=""
+                     style="width: 200px; height: 200px"
+                     class="col-3 d-flex align-items-start mr-2" />
                     }
                     <div class="col">
                         <h3 class="text-left">
@@ -116,8 +116,8 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentBackgrounds)
-                    { 
+                    @foreach (var item in Model.recentBackgrounds)
+                    {
                         <a asp-action="Review" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="d-flex w-100 justify-content-between">
                                 <h4 class="mb-1 text-left" style="color: black">@item.BackgroundName</h4>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentDonations)
+                    @foreach (var item in Model.recentDonations)
                     {
                         <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="row">
@@ -157,6 +157,11 @@
                     }
                 </div>
             </div>
+            <hr />
+            <form method="post" asp-action="GetFullLogs">
+                <input type="submit" class="btn btn-info" name="submit" value="View Snapshot Logs" />
+            </form>
+            
         }
         @if (this.User.IsInRole("Staff"))
         {
@@ -172,7 +177,7 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentBackgrounds)
+                    @foreach (var item in Model.recentBackgrounds)
                     {
                         <a asp-action="Details" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="d-flex w-100 justify-content-between">
@@ -198,7 +203,7 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentDonations)
+                    @foreach (var item in Model.recentDonations)
                     {
                         <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="row">
@@ -228,7 +233,7 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentBackgrounds)
+                    @foreach (var item in Model.recentBackgrounds)
                     {
                         <a asp-action="Details" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="d-flex w-100 justify-content-between">
@@ -253,7 +258,7 @@
                     </div>
                 </div>
                 <div class="list-group">
-                    @foreach(var item in Model.recentDonations)
+                    @foreach (var item in Model.recentDonations)
                     {
                         <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
                             <div class="row">
@@ -290,7 +295,7 @@
                     <p>In the wake of the COVID-19 pandemic, many businesses and individuals face tightening financial constraints and thus result in bankruptcy and/or some form of downsizing that severely inhibits their usual cash flow (for businesses and organizations) or lifestyle (for individuals), thus some popular establishments are forced to terminate their operations despite having a large following/audience. This audience is generally willing to donate and/or help them to stay afloat, however there exists very little ways for businesses/organizations to seek help from their audiences in a formal and efficient way. Therefore, there is a need for a solution that bridges the gap between businesses/organizations and donors.</p>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="h-100 p-5 bg-light border rounded-3 text-left">
                     <h2>Our Objectives</h2>
@@ -299,20 +304,20 @@
                             To create a platform that allows individuals/organizations to post a request for charity on the platform.
                         </li>
                         <li>
-                            To allow engagement of the donators and the individuals/organizations who need help during the pandemic period.                    
+                            To allow engagement of the donators and the individuals/organizations who need help during the pandemic period.
                         </li>
                         <li>
-                            To create a platform for individuals/organizations who are concerned about the news of other individuals/organizations who need help during pandemic period.                     
+                            To create a platform for individuals/organizations who are concerned about the news of other individuals/organizations who need help during pandemic period.
                         </li>
                         <li>
-                            To raise awareness of individuals/organizations in need of potential donors.                    
+                            To raise awareness of individuals/organizations in need of potential donors.
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        
+
         <div class="container px-4 py-5 border rounded-3" style="color: #fff !important; background-color: RGBA(33,37,41,var(--bs-bg-opacity,1)) !important;">
             <h2 class="pb-3 border-bottom">Our Features</h2>
             <div class="row g-4 py-4 row-cols-1 row-cols-lg-3">
