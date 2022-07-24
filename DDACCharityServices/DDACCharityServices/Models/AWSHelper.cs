@@ -122,9 +122,14 @@ namespace DDACCharityServices.Models
         }
 
         public static async Task SendDonationThankYouEmail(AmazonSimpleNotificationServiceClient client, Donation donation) {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            IConfigurationRoot configure = builder.Build();
+
             var request = new PublishRequest() {
                 // TODO: UPDATE CUSTOMER TOPIC ARN AFTER PUBLISHING
-                TopicArn = "arn:aws:sns:us-east-1:342651267539:SNSEmailBroadcastingExample", 
+                TopicArn = configure["AWSCredential:TopicArn"], 
                 Message = "Thank you for your donation of RM" + donation.DonationAmount + " to " + donation.Background.BackgroundName + "!",
                 Subject = "New Donation Made"
             };
