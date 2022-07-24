@@ -32,38 +32,46 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
         [TempData]
         public string ActionMessage { get; set; }
 
-        public EmailSubscriptionModel(UserManager<DDACCharityServicesUser> userManager, SignInManager<DDACCharityServicesUser> signInManager) {
+        public EmailSubscriptionModel(UserManager<DDACCharityServicesUser> userManager, SignInManager<DDACCharityServicesUser> signInManager)
+        {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        public bool testFunc() {
+        public bool testFunc()
+        {
             return true;
-		}
+        }
 
-        public async Task<IActionResult> OnGetAsync() {
+        public async Task<IActionResult> OnGetAsync()
+        {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) {
+            if (user == null)
+            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-			if (user.SubscriptionArn == null) {
-				subscribed = false;
+            if (user.SubscriptionArn == null)
+            {
+                subscribed = false;
                 HttpContext.Session.SetString("subscribed", "false");
-				return Page();
-			}
+                return Page();
+            }
 
-			var builder = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
             IConfigurationRoot configure = builder.Build();
 
 
             var res = await AWSHelper.GetAWSSimpleNotificationServiceClient().GetSubscriptionAttributesAsync(user.SubscriptionArn);
-			if (res.Attributes["PendingConfirmation"].Equals("true")) {
+            if (res.Attributes["PendingConfirmation"].Equals("true"))
+            {
                 subscribed = false;
                 HttpContext.Session.SetString("subscribed", "false");
-            } else {
+            }
+            else
+            {
                 subscribed = true;
                 HttpContext.Session.SetString("subscribed", "true");
             }
@@ -71,7 +79,8 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task OnPostAsync() {
+        public async Task OnPostAsync()
+        {
             var user = await _userManager.GetUserAsync(User);
 
             var builder = new ConfigurationBuilder()
@@ -79,25 +88,29 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
                 .AddJsonFile("appsettings.json");
             IConfigurationRoot configure = builder.Build();
 
-            if (HttpContext.Session.GetString("subscribed").Equals("false")) {
-                SubscribeRequest subscribeRequest = new SubscribeRequest() {
+            if (HttpContext.Session.GetString("subscribed").Equals("false"))
+            {
+                SubscribeRequest subscribeRequest = new SubscribeRequest()
+                {
                     Endpoint = User.Identity.Name,
                     Protocol = "email",
                     TopicArn = configure["AWSCredential:TopicArn"],
                     ReturnSubscriptionArn = true,
                     Attributes = {
-                    { "FilterPolicy", "{\"Email\": [\"zhen.yang.ching@gmail.com\"]}" }
+                        { "FilterPolicy", "{\"Email\": [\"" + user.Email + "\"]}" }
                 }
                 };
                 SubscribeResponse result = await AWSHelper.GetAWSSimpleNotificationServiceClient().SubscribeAsync(subscribeRequest);
-                
+
                 user.SubscriptionArn = result.SubscriptionArn;
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);
 
                 //ActionMessage = "An activation email has been sent to your mailbox. Please confirm your subscription by clicking the link in the email.";
                 TempData["ActionMessage"] = "An activation email has been sent to your mailbox. Please confirm your subscription by clicking the link in the email.";
-            } else {
+            }
+            else
+            {
                 UnsubscribeRequest unsubscribeRequest = new UnsubscribeRequest(user.SubscriptionArn);
                 await AWSHelper.GetAWSSimpleNotificationServiceClient().UnsubscribeAsync(unsubscribeRequest);
 
