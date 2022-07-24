@@ -22,8 +22,6 @@ namespace DDACCharityServices.Models
 {
     public class AWSHelper
     {
-        readonly public static string awsBucketName = "mvcflowershoptp050734";
-
         public static string GetS3BucketName()
         {
             var builder = new ConfigurationBuilder()

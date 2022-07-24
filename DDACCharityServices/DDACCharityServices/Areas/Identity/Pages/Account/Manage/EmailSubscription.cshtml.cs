@@ -86,7 +86,7 @@ namespace DDACCharityServices.Areas.Identity.Pages.Account.Manage
                     TopicArn = configure["AWSCredential:TopicArn"],
                     ReturnSubscriptionArn = true,
                     Attributes = {
-                    { "FilterPolicy", "{\"Email\": [\"zhen.yang.ching@gmail.com\"]}" }
+                    { "FilterPolicy", "{\"Email\": [\"" + user.Email + "\"]}" }
                 }
                 };
                 SubscribeResponse result = await AWSHelper.GetAWSSimpleNotificationServiceClient().SubscribeAsync(subscribeRequest);
