@@ -128,7 +128,6 @@ namespace DDACCharityServices.Models
             IConfigurationRoot configure = builder.Build();
 
             var request = new PublishRequest() {
-                // TODO: UPDATE CUSTOMER TOPIC ARN AFTER PUBLISHING
                 TopicArn = configure["AWSCredential:TopicArn"], 
                 Message = "Thank you for your donation of RM" + donation.DonationAmount + " to " + donation.Background.BackgroundName + "!",
                 Subject = "New Donation Made"
