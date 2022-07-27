@@ -68,7 +68,11 @@ namespace DDACCharityServices.Controllers
 
                     List<Background> recentBackgrounds = _bgContext.Background.OrderByDescending(background => background.BackgroundID).Take(5).ToList();
                     List<Donation> recentDonations = _bgContext.Donation.OrderByDescending(donation => donation.DonationID).Take(20).ToList();
-                    
+
+                    recentDonations.ForEach(donation =>
+                    {
+                        donation.Background = _bgContext.Background.FirstOrDefault(background => background.BackgroundID == donation.BackgroundID);
+                    });
 
                     homeViewModel.recentBackgrounds = recentBackgrounds;
                     homeViewModel.recentDonations = recentDonations;
@@ -96,6 +100,11 @@ namespace DDACCharityServices.Controllers
                         .Take(20)
                         .ToList();
 
+                    recentDonations.ForEach(donation =>
+                    {
+                        donation.Background = _bgContext.Background.FirstOrDefault(background => background.BackgroundID == donation.BackgroundID);
+                    });
+
                     homeViewModel.recentBackgrounds = recentBackgrounds;
                     homeViewModel.recentDonations = recentDonations;
                 }
@@ -118,6 +127,11 @@ namespace DDACCharityServices.Controllers
                         )
                         .Take(20)
                         .ToList();
+
+                    recentDonations.ForEach(donation =>
+                    {
+                        donation.Background = _bgContext.Background.FirstOrDefault(background => background.BackgroundID == donation.BackgroundID);
+                    });
 
                     homeViewModel.recentBackgrounds = recentBackgrounds;
                     homeViewModel.recentDonations = recentDonations;
