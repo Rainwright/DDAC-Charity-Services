@@ -1,0 +1,142 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@model List<List<KeyValuePair<string, string>>>
+
+@{
+    ViewData["Title"] = "Snapshot Logs from DynamoDB";
+}
+
+@if (ViewBag.msg != "")
+{
+    <script>alert("@ViewBag.msg");</script>
+}
+
+
+
+@if (ViewBag.msg == "Data was found!")
+{
+    <center>
+        <br />
+        <h1>DynamoDB Logs</h1>
+        <h3>Logs found from DynamoDB: @Model.Count</h3>
+
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <script type="text/javascript">
+
+            var data = [];
+
+            @foreach (var item in Model)
+            {
+                @foreach (var attributes in item)
+                {
+                    @if (attributes.Key.Equals("flag"))
+                    {
+                        @:data.push('@attributes.Value')
+                    }
+
+                }
+
+            }
+
+            var count = data.reduce((acc, curr) => {
+                    return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                }, {});;
+
+            const countValues = Object.values(count);
+
+
+            console.log(countValues);
+
+
+            const piedata = {
+                labels: [
+                    'Fails',
+                    'Success',
+                ],
+                datasets: [{
+                    label: 'My First Dataset',
+                    data: countValues,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                    ],
+                    hoverOffset: 4
+                }]
+            };
+
+            const config = {
+                type: 'pie',
+                data: piedata,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Fail vs Success Backups'
+                        }
+                    }
+                }
+            };
+
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+        </script>
+
+
+
+        @foreach (var item in Model)
+        {
+            <div class="card" style="margin: 20px 20px">
+                <div class="card-body">
+                    @foreach (var attributes in item)
+                    {
+
+                        @if (attributes.Key.Equals("id"))
+                        {
+                            <h5>ID</h5>
+                        }
+                        @if (attributes.Key.Equals("datetime"))
+                        {
+                            <h5>Date/Time</h5>
+                        }
+                        @if (attributes.Key.Equals("details"))
+                        {
+                            <h5>Details</h5>
+                        }
+                        @if (attributes.Key.Equals("flag"))
+                        {
+                            <h5>Successful Backup?</h5>
+                        }
+                        @if (attributes.Value.Equals("False"))
+                        {
+                            <p style="color: red; font-weight: bold">
+                                Unsuccessful
+                            </p>
+                        }
+                        else if (attributes.Value.Equals("True"))
+                        {
+                            <p style="color: greenyellow; font-weight: bold">
+                                Successful
+                            </p>
+                        }
+                        else
+                        {
+                            <p>@attributes.Value</p>
+                        }
+
+                    }
+                </div>
+            </div>
+        }
+
+    </center>
+}

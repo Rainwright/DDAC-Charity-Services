@@ -3,6 +3,14 @@
     "mssql1": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:DDACCharityServicesContextConnection"
+    },
+    "mssql2": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:DDACCharityServicesContextForBackground"
+    },
+    "mssql3": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:DDACCharityServicesForBackgroundContext"
     }
   }
 }

@@ -1,0 +1,36 @@
+﻿@model CustomUserModel
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>@Model.FirstName's Details</h1>
+        <h6>The below shows the basic user details of the selected user. (@Model.Email)</h6>
+        <hr />
+        <div class="form-group">
+            <label asp-for="@Model.Email"></label>
+            <input asp-for="@Model.Email" class="form-control"disabled />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.FirstName"></label>
+            <input asp-for="@Model.FirstName" class="form-control" disabled/>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.LastName"></label>
+            <input asp-for="@Model.LastName" class="form-control" disabled/>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.PhoneNumber"></label>
+            <input asp-for="@Model.PhoneNumber" class="form-control" disabled/>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.UserRole"></label>
+            <input asp-for="@Model.UserRole" class="form-control" disabled/>        
+        </div>
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-action="Index" class="btn btn-outline-primary">Back To User Information Page</a>
+        </div>
+    </div>
+</div>

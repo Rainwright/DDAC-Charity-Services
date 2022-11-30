@@ -1,8 +1,345 @@
-﻿@{
+﻿@using Amazon.DynamoDBv2.DocumentModel
+@using DDACCharityServices.Controllers
+@using Microsoft.AspNetCore.Identity
+@using DDACCharityServices.Areas.Identity.Data
+@model HomeViewModel
+
+@inject SignInManager<DDACCharityServicesUser> SignInManager
+@inject UserManager<DDACCharityServicesUser> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="mb-4">
+            <h4 class="text-left">Dashboard</h4>
+            <div class="card">
+                <div class="m-3 row">
+                    @if (Model.currentUser.FullImageUrl != null)
+                    {
+                        <img src=@Model.currentUser.FullImageUrl
+                     alt=""
+                     style="width: 200px; height: 200px"
+                     class="col-3 d-flex align-items-start mr-2" />
+                    }
+                    <div class="col">
+                        <h3 class="text-left">
+                            Welcome Back <b>@Model.currentUser.FirstName</b>!
+                        </h3>
+                        <h5 class="text-left">
+                            How was your day? Check out some of the donations made today!
+                        </h5>
+                        <div class="text-left form-text" style="color: #6c757d;">
+                            You are currently logged in as <b>@Model.currentUser.UserRole</b>
+                        </div>
+                        <br />
+                        <div class="col-6 pl-0">
+                            <a id="manage" class="nav-link btn-outline-primary btn" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        @if (this.User.IsInRole("Admin"))
+        {
+            <div class="mb-4">
+                <h4 class="text-left">User Summary</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card py-4" style="color: white; background-color: #00c689">
+                            <h4>Total Admins</h4>
+                            <h1>@ViewBag.adminCount</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card py-4" style="color: white; background-color: #3da5f4">
+                            <h4>Total Staffs</h4>
+                            <h1>@ViewBag.staffCount</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card py-4" style="color: white; background-color: #fda006">
+                            <h4>Total Customers</h4>
+                            <h1>@ViewBag.customerCount</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="mb-4">
+                <h4 class="text-left">Donation Request Summary</h4>
+                <div class="row">
+                    <div class="col">
+                        <div class="card px-3 py-4" style="border-color: #3da5f4">
+                            <h4>Donations</h4>
+                            <h4 style="color: #3da5f4;">Made</h4>
+                            <h1>@ViewBag.bgCount</h1>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card px-3 py-4" style="border-color: #00c689">
+                            <h4>Donations</h4>
+                            <h4 style="color: #00c689;">Approved</h4>
+                            <h1>@ViewBag.bgApprovedCount</h1>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card px-3 py-4" style="border-color: #f1536e">
+                            <h4>Donations</h4>
+                            <h4 style="color: #f1536e;">Rejected</h4>
+                            <h1>@ViewBag.bgRejectedCount</h1>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card px-3 py-4" style="border-color: #fda006">
+                            <h4>Donations</h4>
+                            <h4 style="color: #fda006;">Pending</h4>
+                            <h1>@ViewBag.bgPendingCount</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Recent Donation Requests (Latest 5)</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Backgrounds" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentBackgrounds)
+                    {
+                        <a asp-action="Review" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4 class="mb-1 text-left" style="color: black">@item.BackgroundName</h4>
+                                <h6 style="color: black">Status: <b>@item.BackgroundStatus</b></h6>
+                            </div>
+                            <h5 class="mb-1 text-left" style="color: black">@item.BackgroundDescription</h5>
+                            <h6 class="text-left"><small class="text-left">By: @item.CustomUserModelEmail</small></h6>
+                        </a>
+                    }
+                </div>
+            </div>
+            <hr />
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Recent Donations (Latest 20)</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Donations" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentDonations)
+                    {
+                        <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="row">
+                                <div class="col-8 text-left">
+                                    <h6 style="margin: 0"><b>@item.CustomerEmail</b> donated to <b>@item.Background.BackgroundName</b> on <b>@item.DonationDate</b></h6>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <h5 style="margin: 0; color: green">+RM @item.DonationAmount</h5>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+            <hr />
+            <form method="post" asp-action="GetFullLogs">
+                <input type="submit" class="btn btn-info" name="submit" value="View Snapshot Logs" />
+            </form>
+            
+        }
+        @if (this.User.IsInRole("Staff"))
+        {
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Your Recent Donation Requests (Latest 5)</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Backgrounds" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentBackgrounds)
+                    {
+                        <a asp-action="Details" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4 class="mb-1 text-left" style="color: black">@item.BackgroundName</h4>
+                                <h6 style="color: black">Status: <b>@item.BackgroundStatus</b></h6>
+                            </div>
+                            <h5 class="mb-1 text-left" style="color: black">@item.BackgroundDescription</h5>
+                            <h6 class="text-left"><small class="text-left">By: @item.CustomUserModelEmail</small></h6>
+                        </a>
+                    }
+                </div>
+            </div>
+            <hr />
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Recent Donations To Your Requests (Latest 20)</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Donations" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentDonations)
+                    {
+                        <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="row">
+                                <div class="col-8 text-left">
+                                    <h6 style="margin: 0"><b>@item.CustomerEmail</b> donated to <b>@item.Background.BackgroundName</b> on <b>@item.DonationDate</b></h6>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <h5 style="margin: 0; color: green">+RM @item.DonationAmount</h5>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        @if (this.User.IsInRole("Customer"))
+        {
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Recommended Donation Requests</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Backgrounds" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentBackgrounds)
+                    {
+                        <a asp-action="Details" asp-controller="Backgrounds" asp-route-id="@item.BackgroundID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4 class="mb-1 text-left" style="color: black">@item.BackgroundName</h4>
+                                <h6 class="text-left"><small class="text-left">By: <b>@item.CustomUserModelEmail</b></small></h6>
+                            </div>
+                            <h5 class="mb-1 text-left" style="color: black">@item.BackgroundDescription</h5>
+                        </a>
+                    }
+                </div>
+            </div>
+            <hr />
+            <div class="mb-4">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="text-left">Your Donations Made Recently (Latest 20)</h4>
+                    </div>
+                    <div class="col">
+                        <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Donations" asp-action="Index">
+                            <h6 class="text-right" style="color: grey">View More ></h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.recentDonations)
+                    {
+                        <a asp-action="Details" asp-controller="Donations" asp-route-id="@item.DonationID" class="list-group-item list-group-item-action flex-column align-items-start py-4">
+                            <div class="row">
+                                <div class="col-8 text-left">
+                                    <h6 style="margin: 0">You donated to <b>@item.Background.BackgroundName</b> on <b>@item.DonationDate</b></h6>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <h5 style="margin: 0; color: green">+RM @item.DonationAmount</h5>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="p-5 mb-4 bg-light rounded-3 text-left">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold pl-0">Support Your Local Businesses Now!</h1>
+                <p class="col-md-8 fs-4 pl-0">Help out small businesses around you to restart their business in these trying times of COVID-19. Log into Charithese to start donating now!.</p>
+                <div class="container row">
+                    <a class="btn btn-outline-secondary btn-lg mr-3" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                    <a class="btn btn-primary btn-lg" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-md-stretch mb-4">
+            <div class="col-md-12 mb-4">
+                <div class="h-100 p-5 rounded-3 text-center" style="color: #fff !important; background-color: RGBA(33,37,41,var(--bs-bg-opacity,1)) !important;">
+                    <h2>Our Problem Statement</h2>
+                    <p>In the wake of the COVID-19 pandemic, many businesses and individuals face tightening financial constraints and thus result in bankruptcy and/or some form of downsizing that severely inhibits their usual cash flow (for businesses and organizations) or lifestyle (for individuals), thus some popular establishments are forced to terminate their operations despite having a large following/audience. This audience is generally willing to donate and/or help them to stay afloat, however there exists very little ways for businesses/organizations to seek help from their audiences in a formal and efficient way. Therefore, there is a need for a solution that bridges the gap between businesses/organizations and donors.</p>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="h-100 p-5 bg-light border rounded-3 text-left">
+                    <h2>Our Objectives</h2>
+                    <ul style="padding-left: 2px">
+                        <li>
+                            To create a platform that allows individuals/organizations to post a request for charity on the platform.
+                        </li>
+                        <li>
+                            To allow engagement of the donators and the individuals/organizations who need help during the pandemic period.
+                        </li>
+                        <li>
+                            To create a platform for individuals/organizations who are concerned about the news of other individuals/organizations who need help during pandemic period.
+                        </li>
+                        <li>
+                            To raise awareness of individuals/organizations in need of potential donors.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container px-4 py-5 border rounded-3" style="color: #fff !important; background-color: RGBA(33,37,41,var(--bs-bg-opacity,1)) !important;">
+            <h2 class="pb-3 border-bottom">Our Features</h2>
+            <div class="row g-4 py-4 row-cols-1 row-cols-lg-3">
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h2>Donation Requests</h2>
+                        <p>As a business or organization, you can create and manage donation requests that can help your business stay afloat!</p>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h2>Make Donations</h2>
+                        <p>If you are a customer who wishes to help out their selected small businesses can make donations through the system.</p>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h2>Donation Emails</h2>
+                        <p>Our system would email you a receipt whenever a donation was made as a thank you for supporting your local businesses.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -1,0 +1,60 @@
+﻿@page
+@model DDACCharityServices.Areas.Identity.Pages.Account.Manage.EmailSubscriptionModel
+@using Microsoft.AspNetCore.Http;
+
+@{
+    ViewData["Title"] = "Email Subscription";
+    ViewData["ActivePage"] = ManageNavPages.EmailSubscription;
+}
+
+@functions {
+    
+}
+
+<div class="text-center">
+    <h4 class="text-left">@ViewData["Title"]</h4>
+    @if (TempData["ActionMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["ActionMessage"]
+        </div>
+    }
+    <div class="card">
+        <div class="m-3 row">
+            <div class="col">
+                <h3 class="text-left">
+                    Email Notification Subscription
+                </h3>
+                <div class="text-left form-text" style="color: #6c757d;">
+                    Subscribe to the email notification service to get notified for activities occuring in your account.
+                </div>
+                <br />
+                <form id="" method="post">
+                    
+                    @if (HttpContext.Session.GetString("subscribed").Equals("false"))
+                    {
+                        <div class="col-3 pl-0">
+                             <button type="submit" class="nav-link btn-outline-primary btn">Subscribe</button>
+                        </div>
+                    }
+                    @if (HttpContext.Session.GetString("subscribed").Equals("true"))
+                    {
+                        <div class="col-3 pl-0">
+                             <button type="submit" class="nav-link btn-outline-danger btn">Unsubscribe</button>
+                        </div>
+                    }
+                </form>
+                @if (TempData["statusMessage"] != null)
+                {
+                    <div class="text-left form-text text-primary" style="color: #6c757d;">
+                        @TempData["statusMessage"]
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

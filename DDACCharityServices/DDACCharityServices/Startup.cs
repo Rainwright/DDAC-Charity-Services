@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using DDACCharityServices.Data;
+using Amazon.XRay.Recorder.Core;
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
 
 namespace DDACCharityServices
 {
@@ -16,6 +20,8 @@ namespace DDACCharityServices
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            AWSXRayRecorder.InitializeInstance(configuration: Configuration);
+            AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         public IConfiguration Configuration { get; }
@@ -25,6 +31,10 @@ namespace DDACCharityServices
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddSession();
+
+            services.AddDbContext<DDACCharityServicesForBackgroundContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DDACCharityServicesForBackgroundContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +50,10 @@ namespace DDACCharityServices
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseXRay("DDACCharityServices");
+
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

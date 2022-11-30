@@ -1,0 +1,47 @@
+﻿@model DDACCharityServices.Models.Donation
+
+@{
+    ViewData["Title"] = "Donate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>Make Donation</h1>
+        <h6>Please confirm your donation amount and the donation title. </h6>
+        <hr />
+        <form asp-action="Donate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Background.BackgroundID" />
+
+            <div class="form-group">
+                <label asp-for="Background.BackgroundName"></label>
+                <input asp-for="Background.BackgroundName" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Background.BackgroundDescription"></label>
+                <input asp-for="Background.BackgroundDescription" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Background.BackgroundAmount"></label>
+                <input asp-for="Background.BackgroundAmount" class="form-control"disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Background.CustomUserModelEmail"></label>
+                <input asp-for="Background.CustomUserModelEmail" class="form-control"disabled />
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="DonationAmount"></label>
+                <input asp-for="DonationAmount" class="form-control" />
+                <span asp-validation-for="DonationAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Confirm Donation" class="btn btn-success" />
+            </div>
+        </form>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-primary">Back To Donation Backgrounds Page</a>
+        </div>
+    </div>
+</div>
